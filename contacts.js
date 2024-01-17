@@ -6,9 +6,14 @@ const contactsPath = path.resolve("db", "contacts.json");
 
 export const listContacts = async () => {
   try {
-    const contactList = await fs.readFile(contactsPath);
+    const contactListBuffer = await fs.readFile(contactsPath);
+    const contactList = JSON.parse(contactListBuffer.toString());
 
-    return contactList.toString();
+    if (!contactList.length) {
+      return "Contact List is Empty";
+    }
+
+    return contactList;
   } catch (error) {
     return error;
   }
@@ -29,14 +34,14 @@ export const getContactById = async (contactId) => {
 };
 
 export const addContact = async (name, email, phone) => {
+  const newContact = { id: nanoid(), name, email, phone };
+  const hasUserAllProps = Object.values(newContact).every((prop) => prop);
+
+  if (!hasUserAllProps) {
+    return "You need fill all fields";
+  }
+
   try {
-    const newContact = { id: nanoid(), name, email, phone };
-    const hasUserAllProps = Object.values(newContact).every((prop) => prop);
-
-    if (!hasUserAllProps) {
-      return "You need fill all fields";
-    }
-
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
     const contactUpdatedList = [...contactList, newContact];
@@ -49,4 +54,19 @@ export const addContact = async (name, email, phone) => {
   }
 };
 
-export const removeContact = async (contactId) => {};
+export const removeContact = async (contactId) => {
+  try {
+    const contactListBuffer = await fs.readFile(contactsPath);
+    const contactList = JSON.parse(contactListBuffer.toString());
+
+    const contactUpdatedList = contactList.filter(({ id }) => id !== contactId);
+    const removedContact =
+      contactList.find(({ id }) => id === contactId) || null;
+
+    await fs.writeFile(contactsPath, JSON.stringify(contactUpdatedList));
+
+    return removedContact;
+  } catch (error) {
+    return error;
+  }
+};
