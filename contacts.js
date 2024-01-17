@@ -34,12 +34,13 @@ export const getContactById = async (contactId) => {
 };
 
 export const addContact = async (name, email, phone) => {
-  const newContact = { id: nanoid(), name, email, phone };
   const hasUserAllProps = Object.values(newContact).every((prop) => prop);
 
   if (!hasUserAllProps) {
     return "You need fill all fields";
   }
+
+  const newContact = { id: nanoid(), name, email, phone };
 
   try {
     const contactListBuffer = await fs.readFile(contactsPath);
