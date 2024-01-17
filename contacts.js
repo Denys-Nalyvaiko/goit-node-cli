@@ -20,6 +20,10 @@ export const listContacts = async () => {
 };
 
 export const getContactById = async (contactId) => {
+  if (!contactId) {
+    return "You need enter contact id";
+  }
+
   try {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
