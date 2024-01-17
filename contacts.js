@@ -68,10 +68,6 @@ export const removeContact = async (contactId) => {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
 
-    // const contactUpdatedList = contactList.filter(({ id }) => id !== contactId);
-    // const removedContact =
-    //   contactList.find(({ id }) => id === contactId) || null;
-
     const contactUpdatedList = [];
     let removedContact = null;
 
