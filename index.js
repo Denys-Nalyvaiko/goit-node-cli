@@ -2,8 +2,8 @@ import { program } from "commander";
 import {
   listContacts,
   getContactById,
-  removeContact,
   addContact,
+  removeContact,
 } from "./contacts.js";
 
 program
@@ -31,7 +31,8 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "add":
-      // ... name email phone
+      const newContact = await addContact(name, email, phone);
+      console.log(newContact);
       break;
 
     case "remove":
