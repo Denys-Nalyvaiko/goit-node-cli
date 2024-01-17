@@ -56,13 +56,33 @@ export const addContact = async (name, email, phone) => {
 };
 
 export const removeContact = async (contactId) => {
+  if (!contactId) {
+    return "You need enter contact id";
+  }
+
   try {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
 
-    const contactUpdatedList = contactList.filter(({ id }) => id !== contactId);
-    const removedContact =
-      contactList.find(({ id }) => id === contactId) || null;
+    // const contactUpdatedList = contactList.filter(({ id }) => id !== contactId);
+    // const removedContact =
+    //   contactList.find(({ id }) => id === contactId) || null;
+
+    const contactUpdatedList = [];
+    let removedContact = null;
+
+    for (const contact of contactList) {
+      if (contact.id === contactId) {
+        removedContact = contact;
+        continue;
+      }
+
+      contactUpdatedList.push(contact);
+    }
+
+    if (contactList.length === contactUpdatedList.length) {
+      return null;
+    }
 
     await fs.writeFile(contactsPath, JSON.stringify(contactUpdatedList));
 
